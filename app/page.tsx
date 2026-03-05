@@ -1,65 +1,220 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+
+type NavigatorWithStandalone = Navigator & { standalone?: boolean };
+
+function isStandaloneNow() {
+  const nav = typeof navigator !== "undefined" ? (navigator as NavigatorWithStandalone) : null;
+  const iosStandalone = !!nav?.standalone;
+
+  const mql =
+    typeof window !== "undefined" && window.matchMedia
+      ? window.matchMedia("(display-mode: standalone)").matches
+      : false;
+
+  return iosStandalone || mql;
+}
+
+function isPhoneNow() {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent || "";
+  const iPhone = /iPhone|iPod/i.test(ua);
+  const androidPhone = /Android/i.test(ua) && /Mobile/i.test(ua);
+  return iPhone || androidPhone;
+}
+
+export default function StartPage() {
+  const router = useRouter();
+
+  // ✅ no setState-in-effect: initialize from runtime once
+  const [phone] = useState<boolean>(() => isPhoneNow());
+  const [standalone] = useState<boolean>(() => isStandaloneNow());
+
+  // ✅ effect only performs navigation (external side-effect)
+  useEffect(() => {
+    if (phone && standalone) router.replace("/app");
+  }, [phone, standalone, router]);
+
+  const topPad = useMemo(() => "calc(env(safe-area-inset-top, 0px) + 34px)", []);
+
+  if (!phone) {
+    return (
+      <main
+        style={{
+          minHeight: "100dvh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 24,
+          background: "#e3e5e4",
+          color: "#48494b",
+          overflow: "hidden",
+        }}
+      >
+        <div style={{ width: "min(520px, 100%)" }}>
+          <div style={{ fontSize: 18, letterSpacing: 0.6, opacity: 0.9 }}>
+            G-Normies App Experience
+          </div>
+          <div style={{ height: 14 }} />
+          <div style={{ fontSize: 14, lineHeight: 1.6, opacity: 0.85 }}>
+            This start page is phone-only.
+            <br />
+            Open this link on an iPhone (Safari) or Android phone to install and run the web app.
+          </div>
+          <div style={{ height: 18 }} />
+          <div style={{ fontSize: 13, opacity: 0.75 }}>
+            Once installed, it launches full-screen from your Home Screen.
+          </div>
+
+          <div style={{ height: 18 }} />
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href="https://glitch-normies.vercel.app/"
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: "#48494b", textDecoration: "none", opacity: 0.85, fontSize: 13 }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
+              Get a G-Normie
+            </a>
             <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href="https://x.com/0xfilter8"
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: "#48494b", textDecoration: "none", opacity: 0.7, fontSize: 13 }}
             >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+              by 0xfilter8
+            </a>
+          </div>
         </div>
       </main>
-    </div>
+    );
+  }
+
+  return (
+    <main
+      style={{
+        minHeight: "100dvh",
+        background: "#e3e5e4",
+        color: "#48494b",
+        overflow: "hidden",
+        paddingTop: topPad,
+        paddingLeft: 24,
+        paddingRight: 24,
+        paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 24px)",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div style={{ fontSize: 18, letterSpacing: 0.6, opacity: 0.9 }}>
+        G-Normies App Experience
+      </div>
+
+      <div style={{ height: 14 }} />
+
+      <div style={{ fontSize: 14, lineHeight: 1.6, opacity: 0.85 }}>
+        Save this page to your Home Screen for the full-screen experience.
+      </div>
+
+      <div style={{ height: 14 }} />
+
+      <ol style={{ margin: 0, paddingLeft: 18, fontSize: 14, lineHeight: 1.8, opacity: 0.85 }}>
+        <li>
+          Tap the <b>Share</b> icon in Safari
+        </li>
+        <li>
+          Select <b>Add to Home Screen</b>
+        </li>
+        <li>
+          Open <b>G-Normies</b> from your Home Screen
+        </li>
+      </ol>
+
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 12, width: "min(320px, 100%)" }}>
+          <Link
+            href="/app"
+            style={{
+              textDecoration: "none",
+              border: "1px solid #48494b",
+              padding: "14px 14px",
+              color: "#e3e5e4",
+              background: "#48494b",
+              fontSize: 14,
+              opacity: 0.95,
+              textAlign: "center",
+              userSelect: "none",
+            }}
+          >
+            Open
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => location.reload()}
+            style={{
+              border: "1px solid rgba(72,73,75,0.55)",
+              padding: "14px 14px",
+              color: "#48494b",
+              background: "transparent",
+              fontSize: 14,
+              opacity: 0.9,
+              cursor: "pointer",
+              textAlign: "center",
+              userSelect: "none",
+            }}
+          >
+            I installed it
+          </button>
+
+          {/* simple + clean links (not poky) */}
+          <div style={{ height: 6 }} />
+
+          <a
+            href="https://glitch-normies.vercel.app/"
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              textAlign: "center",
+              fontSize: 12,
+              opacity: 0.7,
+              color: "#48494b",
+              textDecoration: "none",
+            }}
+          >
+            Get a G-Normie
+          </a>
+
+          <a
+            href="https://x.com/0xfilter8"
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              textAlign: "center",
+              fontSize: 12,
+              opacity: 0.6,
+              color: "#48494b",
+              textDecoration: "none",
+            }}
+          >
+            by 0xfilter8
+          </a>
+
+          {standalone ? (
+            <div style={{ fontSize: 12, opacity: 0.55, textAlign: "center" }}>Launching…</div>
+          ) : null}
+        </div>
+      </div>
+    </main>
   );
 }

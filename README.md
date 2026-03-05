@@ -1,36 +1,155 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# G‑Normies iPhone Web App
 
-## Getting Started
+A minimal **iPhone-first web application** for exploring the **Normies
+10k collection** using swipe navigation and pixel‑accurate rendering.
 
-First, run the development server:
+Built with **Next.js**, **React**, **Tailwind**, and deployed on
+**Vercel**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+The app is designed to be installed as a **Home Screen Web App** and
+provides a smooth, cinematic swipe experience for browsing Normies.
+
+------------------------------------------------------------------------
+
+# Features
+
+• Pixel-perfect rendering of Normies (40×40 bitmap)\
+• Swipe navigation across a **100×100 Normie grid (10,000 tokens)**\
+• Cinematic swipe animation\
+• Tap to enter **Token View**\
+• Interactive **pixel density downsampling**\
+• Real-time **scanline glitch effects**\
+• PNG export of current Normie\
+• Dark / Light mode toggle\
+• Full-screen **iPhone PWA experience**\
+• Edge‑aware navigation (no wraparound)
+
+------------------------------------------------------------------------
+
+# Data Source
+
+Normies data is fetched from:
+
+https://api.normies.art
+
+Example endpoint:
+
+GET /normie/{id}/pixels
+
+Example:
+
+https://api.normies.art/normie/0/pixels
+
+Response:
+
+1600 character bitmap string representing a **40×40 monochrome grid**
+
+Pixel values:
+
+  Value   Meaning
+  ------- ---------------------
+  1       Pixel ON (#48494b)
+  0       Pixel OFF (#e3e5e4)
+
+If the Normie has been customized, the returned bitmap includes the
+**composited transform layer**.
+
+------------------------------------------------------------------------
+
+# Tech Stack
+
+• Next.js 16\
+• React 19\
+• TypeScript\
+• TailwindCSS v4\
+• Canvas rendering\
+• Pointer Events for gesture input\
+• Vercel hosting
+
+------------------------------------------------------------------------
+
+# Installation
+
+Clone the repository:
+
+``` bash
+git clone https://github.com/FILTER8/normie-app.git
+cd g-normies-app
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Install dependencies:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+``` bash
+npm install
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Run locally:
 
-## Learn More
+``` bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+    http://localhost:3000
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+------------------------------------------------------------------------
 
-## Deploy on Vercel
+# Deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Deploy easily using **Vercel**:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+``` bash
+vercel
+```
+
+or push to GitHub and import the repo on Vercel.
+
+------------------------------------------------------------------------
+
+# Usage
+
+1.  Open the site on an **iPhone (Safari)**\
+2.  Tap **Share**\
+3.  Select **Add to Home Screen**\
+4.  Launch the app from your Home Screen
+
+The app will run **full screen without browser UI**.
+
+------------------------------------------------------------------------
+
+# Controls
+
+Browse Mode
+
+Swipe left/right/up/down → navigate grid\
+Tap → enter Token View
+
+Token View
+
+Top drag → pixel density control\
+Bottom drag → glitch intensity control\
+Tap → exit Token View
+
+Buttons
+
+Top right → Download PNG\
+Bottom right → Toggle dark mode
+
+------------------------------------------------------------------------
+
+# Related
+
+Generate your own G‑Normie:
+
+https://glitch-normies.vercel.app/
+
+Creator:
+
+https://x.com/0xfilter8
+
+------------------------------------------------------------------------
+
+# License
+
+CC0
