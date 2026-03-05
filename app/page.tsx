@@ -33,12 +33,35 @@ export default function StartPage() {
   const [phone] = useState<boolean>(() => isPhoneNow());
   const [standalone] = useState<boolean>(() => isStandaloneNow());
 
+  // UI state: only for showing the hint modal
+  const [showInstalledHint, setShowInstalledHint] = useState(false);
+
   // ✅ effect only performs navigation (external side-effect)
   useEffect(() => {
     if (phone && standalone) router.replace("/app");
   }, [phone, standalone, router]);
 
   const topPad = useMemo(() => "calc(env(safe-area-inset-top, 0px) + 34px)", []);
+  const bottomPad = useMemo(() => "calc(env(safe-area-inset-bottom, 0px) + 24px)", []);
+
+  const ShareIcon = (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 16V3m0 0l-4 4m4-4l4 4"
+        stroke="#48494b"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M5 13v6h14v-6"
+        stroke="#48494b"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 
   if (!phone) {
     return (
@@ -104,7 +127,7 @@ export default function StartPage() {
         paddingTop: topPad,
         paddingLeft: 24,
         paddingRight: 24,
-        paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 24px)",
+        paddingBottom: bottomPad,
         display: "flex",
         flexDirection: "column",
       }}
@@ -123,7 +146,8 @@ export default function StartPage() {
 
       <ol style={{ margin: 0, paddingLeft: 18, fontSize: 14, lineHeight: 1.8, opacity: 0.85 }}>
         <li>
-          Tap the <b>Share</b> icon in Safari
+          Tap <span style={{ display: "inline-flex", verticalAlign: "middle", margin: "0 6px" }}>{ShareIcon}</span>
+          <b>Share</b> in Safari
         </li>
         <li>
           Select <b>Add to Home Screen</b>
@@ -159,9 +183,10 @@ export default function StartPage() {
             Open
           </Link>
 
+          {/* ✅ Better than reload: explain what to do */}
           <button
             type="button"
-            onClick={() => location.reload()}
+            onClick={() => setShowInstalledHint(true)}
             style={{
               border: "1px solid rgba(72,73,75,0.55)",
               padding: "14px 14px",
@@ -215,6 +240,65 @@ export default function StartPage() {
           ) : null}
         </div>
       </div>
+
+      {/* ✅ “Installed” hint modal */}
+      {showInstalledHint ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setShowInstalledHint(false)}
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.55)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 9999,
+            padding: 16,
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: "min(420px, 100%)",
+              background: "#e3e5e4",
+              color: "#48494b",
+              border: "1px solid rgba(72,73,75,0.35)",
+              padding: 16,
+            }}
+          >
+            <div style={{ fontSize: 14, opacity: 0.9, marginBottom: 10 }}>
+            </div>
+
+            <div style={{ fontSize: 14, lineHeight: 1.6, opacity: 0.85 }}>
+              Safari can’t open the installed app automatically.
+              <br />
+              <br />
+              <b>Close Safari</b>, then open <b>G-Normies</b> from your <b>Home Screen</b>.
+            </div>
+
+            <div style={{ height: 14 }} />
+
+            <button
+              type="button"
+              onClick={() => setShowInstalledHint(false)}
+              style={{
+                width: "100%",
+                border: "1px solid #48494b",
+                padding: "12px 12px",
+                color: "#e3e5e4",
+                background: "#48494b",
+                fontSize: 14,
+                opacity: 0.95,
+                cursor: "pointer",
+              }}
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }
